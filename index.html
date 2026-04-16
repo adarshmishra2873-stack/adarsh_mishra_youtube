@@ -85,7 +85,7 @@
   .action-btn:hover{background:#2A2A2A}
   .action-btn.liked{background:#FF000022;border-color:var(--red);color:var(--red)}
   .channel-info{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
-  .ch-avatar{width:44px;height:44px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0}
+  .ch-avatar{width:44px;height:44px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0; overflow:hidden;}
   .ch-name{font-weight:600;font-size:14px}
   .ch-subs{font-size:12px;color:var(--muted)}
   .sub-btn{margin-left:auto;background:var(--text);color:var(--dark);border:none;padding:8px 18px;border-radius:20px;cursor:pointer;font-weight:600;font-size:13px;font-family:inherit}
@@ -224,7 +224,7 @@ const firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 let ytPlayer;
 
-// HARDCODED API KEY (Added User's API Key here)
+// HARDCODED API KEY
 const apiKey = 'AIzaSyBUxmcurJZITJ_iA4RRk6idNE3gwzpqby8'; 
 
 let currentVid=null; let likedVids=new Set(); let subbedChannels=new Set(); let currentVideos=[]; let currentIdx=0;
@@ -358,8 +358,12 @@ function openPlayer(idx){
   document.getElementById('player-vid-title').textContent=t.title;
   document.getElementById('player-views').textContent=fmtViews(v.statistics?.viewCount);
   document.getElementById('player-date').textContent=fmtDate(t.publishedAt);
-  document.getElementById('ch-av').textContent=(t.channelTitle||'?')[0];
-  document.getElementById('ch-name-d').textContent=t.channelTitle||'—';
+  
+  // Naya Channel Link Code
+  const channelUrl = `https://www.youtube.com/channel/${t.channelId}`;
+  document.getElementById('ch-av').innerHTML = `<a href="${channelUrl}" target="_blank" style="color:inherit; text-decoration:none; display:flex; width:100%; height:100%; align-items:center; justify-content:center;">${(t.channelTitle||'?')[0]}</a>`;
+  document.getElementById('ch-name-d').innerHTML = `<a href="${channelUrl}" target="_blank" style="color:var(--text); text-decoration:none;">${t.channelTitle||'—'}</a>`;
+  
   document.getElementById('ch-subs-d').textContent='YouTube Channel';
   document.getElementById('player-desc').textContent=t.description||'No description.';
   
