@@ -3,469 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AM Play - Adarsh Mishra</title>
+<title>AM PLAY PRO MAX</title>
+
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{--red:#FF0000;--dark:#0F0F0F;--card:#1A1A1A;--border:#2A2A2A;--text:#F1F1F1;--muted:#AAAAAA;--accent:#FF4444}
-  body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
-  #app{display:flex;flex-direction:column;min-height:100vh}
+body{margin:0;background:#000;color:#fff;font-family:sans-serif;}
+header{padding:10px;background:#111;display:flex;justify-content:space-between;}
+.logo{color:red;font-size:20px;font-weight:bold;}
 
-  .topbar{background:#0A0A0A;border-bottom:1px solid var(--border);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-  .logo{display:flex;align-items:center;gap:8px;text-decoration:none;cursor:pointer;}
-  .logo-icon{background:var(--red);border-radius:6px;width:32px;height:24px;display:flex;align-items:center;justify-content:center}
-  .logo-icon svg{width:14px;height:14px;fill:white}
-  .logo-text{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--text)}
-  .logo-sub{font-size:11px;color:var(--muted);margin-top:-2px}
-  .search-bar{flex:1;max-width:480px;margin:0 20px;display:flex}
-  .search-bar input{flex:1;background:#1F1F1F;border:1px solid var(--border);border-right:none;border-radius:24px 0 0 24px;padding:8px 16px;color:var(--text);font-size:14px;outline:none}
-  .search-bar input:focus{border-color:#555}
-  .search-btn{background:#2A2A2A;border:1px solid var(--border);border-left:none;border-radius:0 24px 24px 0;padding:8px 16px;cursor:pointer;color:var(--muted)}
-  .search-btn:hover{background:#333}
-  .topbar-right{display:flex;align-items:center;gap:12px}
-  
-  /* User Badge updated for Image */
-  .user-badge{background:var(--border);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;cursor:pointer;overflow:hidden;}
-  .user-badge img {width:100%; height:100%; object-fit:cover;}
+.reels{
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
 
-  .main-layout{display:flex;flex:1}
-  .sidebar{width:220px;background:#0A0A0A;border-right:1px solid var(--border);padding:16px 0;flex-shrink:0}
-  .sidebar-item{display:flex;align-items:center;gap:12px;padding:10px 20px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .2s;border-radius:0}
-  .sidebar-item:hover,.sidebar-item.active{background:#1A1A1A;color:var(--text)}
-  .sidebar-item.active{border-left:3px solid var(--red)}
-  .sidebar-icon{font-size:16px;width:20px;text-align:center}
-  .sidebar-section{font-size:11px;font-weight:600;color:#555;padding:12px 20px 4px;text-transform:uppercase;letter-spacing:.5px}
+.video{
+  height:100vh;
+  position:relative;
+  scroll-snap-align:start;
+}
 
-  .content{flex:1;overflow-y:auto;padding:20px}
+iframe{
+  width:100%;
+  height:100%;
+  border:none;
+}
 
-  .hero-banner{background:linear-gradient(135deg,#1a0000,#2d0505,#1a0000);border:1px solid #3a0000;border-radius:12px;padding:28px 32px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center}
-  .hero-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;color:var(--text)}
-  .hero-title span{color:var(--red)}
-  .hero-sub{font-size:14px;color:var(--muted);margin-top:4px}
-  .hero-stats{display:flex;gap:24px}
-  .hero-stat{text-align:center}
-  .hero-stat .num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red)}
-  .hero-stat .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.controls{
+  position:absolute;
+  right:10px;
+  bottom:80px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
 
-  .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-  .section-title{font-size:16px;font-weight:600;color:var(--text)}
+button{
+  background:#111;
+  color:#fff;
+  border:none;
+  padding:10px;
+  border-radius:50%;
+  cursor:pointer;
+}
 
-  .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:32px}
-  .video-card{background:var(--card);border-radius:10px;overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s;border:1px solid var(--border)}
-  .video-card:hover{transform:translateY(-3px);border-color:#444}
-  .thumb{position:relative;padding-top:56.25%;background:#222;overflow:hidden}
-  .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-  .duration{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.85);color:#fff;font-size:11px;padding:2px 5px;border-radius:4px;font-weight:500}
-  .play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);opacity:0;transition:opacity .2s}
-  .video-card:hover .play-btn{opacity:1}
-  .play-btn svg{width:48px;height:48px;fill:white;filter:drop-shadow(0 2px 8px rgba(0,0,0,.5))}
-  .video-info{padding:12px}
-  .video-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .video-meta{font-size:11px;color:var(--muted)}
-  .channel-row{display:flex;align-items:center;gap:6px;margin-bottom:3px}
-  .channel-av{width:18px;height:18px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;flex-shrink:0}
-
-  .player-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:1000;flex-direction:column}
-  .player-modal.open{display:flex}
-  .player-header{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#0A0A0A;border-bottom:1px solid var(--border)}
-  .close-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;padding:4px 8px;border-radius:4px}
-  .close-btn:hover{background:#222;color:var(--text)}
-  .player-title-bar{font-size:14px;font-weight:500;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  
-  .player-body{display:flex;flex:1;overflow:hidden}
-  .player-main{flex:1;display:flex;flex-direction:column;overflow-y:auto}
-  .iframe-wrap{position:relative;padding-top:56.25%;background:#000}
-  .iframe-wrap iframe, .iframe-wrap div{position:absolute;inset:0;width:100%;height:100%;border:0}
-  .player-details{padding:16px;border-bottom:1px solid var(--border)}
-  .player-vid-title{font-size:18px;font-weight:600;margin-bottom:8px;line-height:1.4}
-  .player-stats{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-  .view-count{font-size:13px;color:var(--muted)}
-  .action-btns{display:flex;gap:8px;margin-left:auto}
-  .action-btn{background:#1F1F1F;border:1px solid var(--border);color:var(--text);padding:7px 14px;border-radius:20px;cursor:pointer;font-size:13px;font-family:inherit;display:flex;align-items:center;gap:5px;transition:background .2s}
-  .action-btn:hover{background:#2A2A2A}
-  .action-btn.liked{background:#FF000022;border-color:var(--red);color:var(--red)}
-  .channel-info{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
-  .ch-avatar{width:44px;height:44px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0; overflow:hidden;}
-  .ch-name{font-weight:600;font-size:14px}
-  .ch-subs{font-size:12px;color:var(--muted)}
-  .sub-btn{margin-left:auto;background:var(--text);color:var(--dark);border:none;padding:8px 18px;border-radius:20px;cursor:pointer;font-weight:600;font-size:13px;font-family:inherit}
-  .sub-btn.subbed{background:#333;color:var(--text)}
-  .player-desc{padding:16px;font-size:13px;color:var(--muted);line-height:1.6}
-  .sidebar-queue{width:320px;border-left:1px solid var(--border);overflow-y:auto;background:#0A0A0A}
-  .queue-header{padding:12px 16px;font-size:14px;font-weight:600;border-bottom:1px solid var(--border);position:sticky;top:0;background:#0A0A0A}
-  .queue-item{display:flex;gap:10px;padding:10px 12px;cursor:pointer;transition:background .2s;border-radius:6px;margin:4px 8px}
-  .queue-item:hover{background:var(--card)}
-  .queue-item.playing{background:#1a0000;border:1px solid #3a0000}
-  .queue-thumb{width:80px;height:45px;border-radius:5px;background:#222;overflow:hidden;position:relative;flex-shrink:0}
-  .queue-thumb img{width:100%;height:100%;object-fit:cover}
-  .queue-info .qtitle{font-size:12px;font-weight:500;line-height:1.3;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .queue-info .qmeta{font-size:11px;color:var(--muted);margin-top:3px}
-
-  .trending-section{margin-bottom:32px}
-  .trending-list{display:flex;flex-direction:column;gap:1px;background:var(--border);border-radius:10px;overflow:hidden}
-  .trending-item{display:flex;gap:12px;padding:12px 16px;background:var(--card);cursor:pointer;align-items:center;transition:background .2s}
-  .trending-item:hover{background:#222}
-  .trend-num{font-family:'Bebas Neue',sans-serif;font-size:24px;color:#333;width:30px;text-align:center;flex-shrink:0}
-  .trend-num.top3{color:var(--red)}
-  .trend-thumb{width:100px;height:56px;border-radius:6px;overflow:hidden;background:#222;flex-shrink:0;position:relative}
-  .trend-thumb img{width:100%;height:100%;object-fit:cover}
-  .trend-info{flex:1;min-width:0}
-  .trend-title{font-size:14px;font-weight:500;line-height:1.4;margin-bottom:4px;color:var(--text)}
-  .trend-meta{font-size:12px;color:var(--muted)}
-  .trend-views{font-size:12px;color:var(--red);font-weight:500}
-
-  .load-more{display:flex;justify-content:center;padding:20px}
-  .load-more button{background:var(--card);border:1px solid var(--border);color:var(--text);padding:10px 32px;border-radius:6px;cursor:pointer;font-size:14px;font-family:inherit;transition:background .2s}
-  .load-more button:hover{background:#222}
-  .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top:2px solid var(--red);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
-  @keyframes spin{to{transform:rotate(360deg)}}
-
-  .category-pills{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-  .pill{background:var(--card);border:1px solid var(--border);color:var(--text);padding:6px 14px;border-radius:20px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .2s;white-space:nowrap}
-  .pill:hover,.pill.active{background:var(--text);color:var(--dark);border-color:var(--text)}
-
-  @media(max-width:700px){.sidebar{display:none}.search-bar{max-width:200px}.hero-stats{display:none}.sidebar-queue{display:none}.player-body{flex-direction:column}}
+.top-controls{
+  position:absolute;
+  top:10px;
+  left:10px;
+}
 </style>
 </head>
+
 <body>
 
-<div id="app">
-  <div class="topbar">
-    <a class="logo" onclick="showPage('home')">
-      <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-      <div><div class="logo-text">AM Play</div><div class="logo-sub">by Adarsh Mishra</div></div>
-    </a>
-    <div class="search-bar">
-      <input type="text" id="search-input" placeholder="Search videos, channels..." onkeydown="if(event.key==='Enter')doSearch()">
-      <button class="search-btn" onclick="doSearch()">&#128269;</button>
-    </div>
-    <div class="topbar-right">
-      <div class="user-badge" title="Adarsh Mishra">
-        <img src="profile.jpg" alt="Profile" onerror="this.style.display='none'; this.parentNode.innerText='AM'">
-      </div>
-    </div>
-  </div>
+<header>
+  <div class="logo">AM PLAY MAX</div>
+</header>
 
-  <div class="main-layout">
-    <div class="sidebar">
-      <div class="sidebar-item active" onclick="showPage('home');setActive(this)"><span class="sidebar-icon">&#127968;</span> Home</div>
-      <div class="sidebar-item" onclick="showPage('trending');setActive(this)"><span class="sidebar-icon">&#128293;</span> Trending</div>
-      <div class="sidebar-item" onclick="showPage('search');setActive(this)"><span class="sidebar-icon">&#128269;</span> Search</div>
-      <div class="sidebar-section">Categories</div>
-      <div class="sidebar-item" onclick="loadCategory('music');setActive(this)"><span class="sidebar-icon">&#127925;</span> Music</div>
-      <div class="sidebar-item" onclick="loadCategory('gaming');setActive(this)"><span class="sidebar-icon">&#127918;</span> Gaming</div>
-      <div class="sidebar-item" onclick="loadCategory('tech');setActive(this)"><span class="sidebar-icon">&#128187;</span> Technology</div>
-      <div class="sidebar-item" onclick="loadCategory('news');setActive(this)"><span class="sidebar-icon">&#128240;</span> News</div>
-      <div class="sidebar-item" onclick="loadCategory('sports');setActive(this)"><span class="sidebar-icon">&#9917;</span> Sports</div>
-      <div class="sidebar-item" onclick="loadCategory('education');setActive(this)"><span class="sidebar-icon">&#128218;</span> Education</div>
-    </div>
-
-    <div class="content" id="main-content">
-      <div id="page-home"></div>
-      <div id="page-trending" style="display:none"></div>
-      <div id="page-search" style="display:none"></div>
-    </div>
-  </div>
-</div>
-
-<div class="player-modal" id="player-modal">
-  <div class="player-header">
-    <button class="close-btn" onclick="closePlayer()">&#10005;</button>
-    <div class="player-title-bar" id="modal-title-bar">Video Player</div>
-    <div style="display:flex;gap:8px;align-items:center;">
-      
-      <select id="speed-control" class="action-btn" onchange="changeSpeed(this.value)" style="outline:none; cursor:pointer; background:#1F1F1F; color:var(--text); border:1px solid var(--border);">
-        <option value="0.5">0.5x</option>
-        <option value="1" selected>1x Normal</option>
-        <option value="1.5">1.5x</option>
-        <option value="2">2x</option>
-        <option value="3">3x</option>
-        <option value="4">4x</option>
-      </select>
-
-      <button class="action-btn" onclick="toggleLike()" id="like-btn">&#10084; Like</button>
-      <button class="action-btn" onclick="shareVideo()" id="share-btn">&#8679; Share</button>
-    </div>
-  </div>
-  <div class="player-body">
-    <div class="player-main">
-      <div class="iframe-wrap">
-        <div id="yt-iframe"></div>
-      </div>
-      <div class="player-details">
-        <div class="player-vid-title" id="player-vid-title">—</div>
-        <div class="player-stats">
-          <span class="view-count" id="player-views">—</span>
-          <span class="view-count" id="player-date">—</span>
-          <div class="action-btns">
-            <button class="action-btn" onclick="openInYT()">&#128279; YouTube pe dekho</button>
-          </div>
-        </div>
-      </div>
-      <div class="channel-info" id="channel-info-block">
-        <div class="ch-avatar" id="ch-av">AM</div>
-        <div><div class="ch-name" id="ch-name-d">—</div><div class="ch-subs" id="ch-subs-d">—</div></div>
-        <button class="sub-btn" id="sub-btn" onclick="toggleSub()">Subscribe</button>
-      </div>
-      <div class="player-desc" id="player-desc">—</div>
-    </div>
-    <div class="sidebar-queue">
-      <div class="queue-header">&#9654; Up Next</div>
-      <div id="queue-list"></div>
-    </div>
-  </div>
-</div>
+<div class="reels" id="reels"></div>
 
 <script>
-// Load YouTube IFrame Player API code asynchronously.
-const tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-const firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-let ytPlayer;
 
-// HARDCODED API KEY
-const apiKey = 'AIzaSyBUxmcurJZITJ_iA4RRk6idNE3gwzpqby8'; 
+// ⚠️ NO DIRECT API KEY HERE (proxy use)
+const API="https://yt.lemnoslife.com/noKey/videos?part=snippet&chart=mostPopular&maxResults=10&regionCode=IN";
 
-let currentVid=null; let likedVids=new Set(); let subbedChannels=new Set(); let currentVideos=[]; let currentIdx=0;
+let players=[];
 
-async function fetchYT(path){
-  try {
-    const r=await fetch(`https://www.googleapis.com/youtube/v3/${path}&key=${apiKey}`);
-    if(!r.ok) return null;
-    return await r.json();
-  } catch { return null; }
-}
+async function load(){
+  const res=await fetch(API);
+  const data=await res.json();
 
-function fmtViews(n){if(!n)return'';const x=parseInt(n);if(x>=1e9)return(x/1e9).toFixed(1)+'B views';if(x>=1e6)return(x/1e6).toFixed(1)+'M views';if(x>=1e3)return(x/1e3).toFixed(0)+'K views';return x+' views';}
-function fmtDate(s){if(!s)return'';try{return new Date(s).toLocaleDateString('en-IN',{year:'numeric',month:'short',day:'numeric'});}catch{return s;}}
-function fmtDur(s){if(!s)return'';const m=s.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);if(!m)return'';const h=m[1]?m[1]+':':'';const mi=m[2]?(m[2].padStart(h?2:1,'0'))+':':'0:';const sec=(m[3]||'0').padStart(2,'0');return h+mi+sec;}
+  document.getElementById("reels").innerHTML=data.items.map((v,i)=>`
+    <div class="video">
+      
+      <iframe src="https://www.youtube.com/embed/${v.id}?enablejsapi=1&playsinline=1"></iframe>
 
-function videoCard(v,idx){
-  const vid=v.id?.videoId||v.id;
-  const t=v.snippet;
-  const dur=v.contentDetails?fmtDur(v.contentDetails.duration):'';
-  return`<div class="video-card" onclick="openPlayer(${idx})">
-    <div class="thumb">
-      <img src="${t.thumbnails?.medium?.url||''}" alt="" loading="lazy" onerror="this.style.display='none'">
-      ${dur?`<div class="duration">${dur}</div>`:''}
-      <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="controls">
+        <button onclick="speed(${i},1)">1x</button>
+        <button onclick="speed(${i},2)">2x</button>
+        <button onclick="speed(${i},4)">4x⚡</button>
+        <button onclick="earn()">💰</button>
+      </div>
+
     </div>
-    <div class="video-info">
-      <div class="video-title">${t.title}</div>
-      <div class="channel-row"><div class="channel-av">${(t.channelTitle||'?')[0]}</div><span>${t.channelTitle||''}</span></div>
-      <div class="video-meta">${fmtViews(v.statistics?.viewCount)} • ${fmtDate(t.publishedAt)}</div>
-    </div>
-  </div>`;
+  `).join("");
+
+  initPlayers();
 }
 
-function trendingItem(v,i){
-  const vid=v.id?.videoId||v.id;
-  const t=v.snippet;
-  return`<div class="trending-item" onclick="openPlayer(${i})">
-    <div class="trend-num ${i<3?'top3':''}">${i+1}</div>
-    <div class="trend-thumb"><img src="${t.thumbnails?.medium?.url||''}" alt="" loading="lazy" onerror="this.style.display='none'"></div>
-    <div class="trend-info">
-      <div class="trend-title">${t.title}</div>
-      <div class="trend-meta">${t.channelTitle}</div>
-      <div class="trend-views">${fmtViews(v.statistics?.viewCount)}</div>
-    </div>
-  </div>`;
+function initPlayers(){
+  const iframes=document.querySelectorAll("iframe");
+  iframes.forEach((frame,i)=>{
+    players[i]=frame.contentWindow;
+  });
 }
 
-async function loadHome(){
-  const pg=document.getElementById('page-home');
-  pg.innerHTML=`<div class="hero-banner">
-    <div><div class="hero-title">AM <span>PLAY</span></div><div class="hero-sub">Adarsh Mishra's Premium Video Platform</div></div>
-    <div class="hero-stats">
-      <div class="hero-stat"><div class="num">∞</div><div class="label">Videos</div></div>
-      <div class="hero-stat"><div class="num">4K</div><div class="label">Quality</div></div>
-      <div class="hero-stat"><div class="num">AD</div><div class="label">Free</div></div>
-    </div>
-  </div>
-  <div class="category-pills">
-    ${['All','Music','Gaming','Tech','News','Sports','Comedy','Education'].map((c,i)=>`<button class="pill${i===0?' active':''}" onclick="pillClick(this,'${c.toLowerCase()}')">${c}</button>`).join('')}
-  </div>
-  <div class="section-header"><div class="section-title">&#128293; Popular Videos</div></div>
-  <div class="video-grid" id="home-grid"><div style="padding:20px;color:var(--muted);text-align:center"><span class="spinner"></span> Loading...</div></div>
-  <div class="load-more"><button onclick="loadMoreHome()">Load More</button></div>`;
+// ⚡ SPEED CONTROL
+function speed(i,rate){
+  players[i].postMessage(JSON.stringify({
+    event:"command",
+    func:"setPlaybackRate",
+    args:[rate]
+  }),"*");
+}
 
-  const d=await fetchYT('videos?part=snippet,statistics,contentDetails&chart=mostPopular&regionCode=IN&maxResults=16');
-  if(d?.items) {
-      currentVideos=d.items;
-      document.getElementById('home-grid').innerHTML=currentVideos.map((v,i)=>videoCard(v,i)).join('');
-  } else {
-      document.getElementById('home-grid').innerHTML="<div style='padding:20px;text-align:center'>Videos load nahi ho pa rahe. API limit ya connection check karein.</div>";
+// 💰 EARNING SYSTEM
+function earn(){
+  window.open("https://www.amazon.in","_blank"); // affiliate replace karo
+}
+
+// 🎧 BACKGROUND PLAY
+document.addEventListener("visibilitychange",()=>{
+  if(document.hidden){
+    players.forEach(p=>{
+      p.postMessage(JSON.stringify({
+        event:"command",
+        func:"playVideo"
+      }),"*");
+    });
   }
-}
+});
 
-async function loadTrending(){
-  const pg=document.getElementById('page-trending');
-  pg.innerHTML=`<div class="section-header" style="margin-bottom:20px"><div class="section-title">&#128293; Trending in India</div></div>
-  <div id="trend-list" class="trending-list"><div style="padding:20px;color:var(--muted);text-align:center"><span class="spinner"></span> Loading...</div></div>`;
-  
-  const d=await fetchYT('videos?part=snippet,statistics,contentDetails&chart=mostPopular&regionCode=IN&maxResults=20');
-  if(d?.items) {
-      currentVideos=d.items;
-      document.getElementById('trend-list').innerHTML=currentVideos.map((v,i)=>trendingItem(v,i)).join('');
-  }
-}
-
-async function doSearch(){
-  const q=document.getElementById('search-input').value.trim();
-  if(!q)return;
-  showPage('search');
-  const pg=document.getElementById('page-search');
-  pg.innerHTML=`<div class="section-header" style="margin-bottom:20px"><div class="section-title">Results: "${q}"</div></div>
-  <div class="video-grid" id="search-grid"><div style="padding:20px;color:var(--muted);text-align:center"><span class="spinner"></span> Searching...</div></div>`;
-  
-  const d=await fetchYT(`search?part=snippet&type=video&q=${encodeURIComponent(q)}&maxResults=16&regionCode=IN`);
-  if(!d?.items||d.items.length===0){document.getElementById('search-grid').innerHTML='<div style="padding:20px;color:var(--muted);text-align:center">No results found.</div>';return;}
-  const ids=d.items.map(v=>v.id.videoId).join(',');
-  const stats=await fetchYT(`videos?part=statistics,contentDetails&id=${ids}`);
-  const statsMap={};stats?.items?.forEach(s=>{statsMap[s.id]=s;});
-  currentVideos=d.items.map(v=>({...v,...(statsMap[v.id.videoId]||{})}));
-  document.getElementById('search-grid').innerHTML=currentVideos.map((v,i)=>videoCard(v,i)).join('');
-}
-
-async function loadCategory(cat){
-  showPage('home');
-  const pg=document.getElementById('page-home');
-  pg.innerHTML=`<div class="section-header" style="margin-bottom:20px"><div class="section-title">Category: ${cat}</div></div>
-  <div class="video-grid" id="home-grid"><div style="padding:20px;color:var(--muted);text-align:center"><span class="spinner"></span> Loading...</div></div>`;
-  
-  const d=await fetchYT(`search?part=snippet&type=video&q=${encodeURIComponent(cat)}&maxResults=16&regionCode=IN`);
-  if(!d?.items){document.getElementById('home-grid').innerHTML='<div style="padding:20px;color:var(--muted)">Error loading.</div>';return;}
-  const ids=d.items.map(v=>v.id.videoId).join(',');
-  const stats=await fetchYT(`videos?part=statistics,contentDetails&id=${ids}`);
-  const statsMap={};stats?.items?.forEach(s=>{statsMap[s.id]=s;});
-  currentVideos=d.items.map(v=>({...v,...(statsMap[v.id.videoId]||{})}));
-  document.getElementById('home-grid').innerHTML=currentVideos.map((v,i)=>videoCard(v,i)).join('');
-}
-
-function loadMoreHome(){loadCategory('trending india');}
-
-function pillClick(el,cat){document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');if(cat==='all')loadHome();else loadCategory(cat);}
-
-function openPlayer(idx){
-  currentIdx=parseInt(idx);
-  const v=currentVideos[currentIdx];
-  if(!v)return;
-  const vid=v.id?.videoId||v.id;
-  const t=v.snippet;
-  
-  document.getElementById('modal-title-bar').textContent=t.title;
-  document.getElementById('player-vid-title').textContent=t.title;
-  document.getElementById('player-views').textContent=fmtViews(v.statistics?.viewCount);
-  document.getElementById('player-date').textContent=fmtDate(t.publishedAt);
-  
-  // Naya Channel Link Code
-  const channelUrl = `https://www.youtube.com/channel/${t.channelId}`;
-  document.getElementById('ch-av').innerHTML = `<a href="${channelUrl}" target="_blank" style="color:inherit; text-decoration:none; display:flex; width:100%; height:100%; align-items:center; justify-content:center;">${(t.channelTitle||'?')[0]}</a>`;
-  document.getElementById('ch-name-d').innerHTML = `<a href="${channelUrl}" target="_blank" style="color:var(--text); text-decoration:none;">${t.channelTitle||'—'}</a>`;
-  
-  document.getElementById('ch-subs-d').textContent='YouTube Channel';
-  document.getElementById('player-desc').textContent=t.description||'No description.';
-  
-  const sb=document.getElementById('sub-btn');
-  sb.textContent=subbedChannels.has(t.channelTitle)?'Subscribed':'Subscribe';
-  sb.className=subbedChannels.has(t.channelTitle)?'sub-btn subbed':'sub-btn';
-  
-  currentVid=v;
-  buildQueue();
-  document.getElementById('player-modal').classList.add('open');
-
-  const speedVal = parseFloat(document.getElementById('speed-control').value);
-
-  // Load video in YouTube API Player
-  if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
-      ytPlayer.loadVideoById(vid);
-      ytPlayer.setPlaybackRate(speedVal);
-  } else {
-      ytPlayer = new YT.Player('yt-iframe', {
-          height: '100%',
-          width: '100%',
-          videoId: vid,
-          playerVars: { 'autoplay': 1, 'rel': 0, 'playsinline': 1 },
-          events: {
-              'onReady': (event) => {
-                  event.target.playVideo();
-                  event.target.setPlaybackRate(speedVal);
-              }
-          }
-      });
-  }
-}
-
-function changeSpeed(rate) {
-    if(ytPlayer && ytPlayer.setPlaybackRate) {
-        ytPlayer.setPlaybackRate(parseFloat(rate));
-    }
-}
-
-function closePlayer(){
-  document.getElementById('player-modal').classList.remove('open');
-  if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
-      ytPlayer.stopVideo(); // Stop audio when closed
-  }
-}
-
-function buildQueue(){
-  const ql=document.getElementById('queue-list');
-  ql.innerHTML=currentVideos.map((v,i)=>{
-    const vid=v.id?.videoId||v.id;
-    const t=v.snippet;
-    return`<div class="queue-item${i===currentIdx?' playing':''}" onclick="openPlayer(${i})">
-      <div class="queue-thumb"><img src="${t.thumbnails?.medium?.url||''}" loading="lazy" onerror="this.style.display='none'"></div>
-      <div class="queue-info"><div class="qtitle">${t.title}</div><div class="qmeta">${t.channelTitle}</div></div>
-    </div>`;
-  }).join('');
-}
-
-function toggleLike(){
-  const btn=document.getElementById('like-btn');
-  if(!currentVid)return;
-  const vid=currentVid.id?.videoId||currentVid.id;
-  if(likedVids.has(vid)){likedVids.delete(vid);btn.className='action-btn';btn.textContent='♡ Like';}
-  else{likedVids.add(vid);btn.className='action-btn liked';btn.textContent='❤ Liked';}
-}
-
-function toggleSub(){
-  if(!currentVid)return;
-  const ch=currentVid.snippet.channelTitle;
-  const sb=document.getElementById('sub-btn');
-  if(subbedChannels.has(ch)){subbedChannels.delete(ch);sb.textContent='Subscribe';sb.className='sub-btn';}
-  else{subbedChannels.add(ch);sb.textContent='Subscribed';sb.className='sub-btn subbed';}
-}
-
-function shareVideo(){
-  if(!currentVid)return;
-  const vid=currentVid.id?.videoId||currentVid.id;
-  const url=`https://youtu.be/${vid}`;
-  if(navigator.clipboard){navigator.clipboard.writeText(url).then(()=>alert('Link copied: '+url));}
-  else{prompt('Copy link:',url);}
-}
-
-function openInYT(){
-  if(!currentVid)return;
-  const vid=currentVid.id?.videoId||currentVid.id;
-  window.open('https://www.youtube.com/watch?v='+vid,'_blank');
-}
-
-function showPage(name){
-  ['home','trending','search'].forEach(p=>{const el=document.getElementById('page-'+p);if(el)el.style.display=p===name?'block':'none';});
-  if(name==='home'&&!document.getElementById('home-grid').innerHTML.includes('video-card'))loadHome();
-  if(name==='trending')loadTrending();
-}
-
-function setActive(el){document.querySelectorAll('.sidebar-item').forEach(e=>e.classList.remove('active'));el.classList.add('active');}
-
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closePlayer();});
-
-// Start Load
-loadHome();
+// ⚡ FAST LOAD
+load();
 
 </script>
+
 </body>
 </html>
-
